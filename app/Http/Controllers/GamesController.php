@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class GamesController extends Controller
 {
@@ -33,7 +34,7 @@ class GamesController extends Controller
 
     public function show($slug)
     {
-        $game = Http::withHeaders([
+        $games = Http::withHeaders([
             'Client-ID' => config('services.igdb.client_id'),
             'Authorization' => 'Bearer ' . cache('token')
         ])->withBody("
@@ -42,14 +43,51 @@ class GamesController extends Controller
               websites.*, videos.*, screenshots.*, similar_games.rating, similar_games.cover.url,
                similar_games.name, similar_games.rating, similar_games.platforms.abbreviation, similar_games.slug;
             where slug=\"{$slug}\";
-            "
-            , 'text/plain')
+            ", 'text/plain')
             ->post('https://api.igdb.com/v4/games')
             ->json();
-        abort_if(!$game, 404);
+        abort_if(!$games, 404);
 
         return view('show', [
-            'game' => $game[0]
+            'game' => $this->formatForView($games[0])
+        ]);
+    }
+
+    private function formatForView($game)
+    {
+        return collect($game)->merge([
+            'coverImageUrl' => Str::replaceFirst('thumb', 'cover_big', $game['cover']['url']),
+            'genres' => collect($game['genres'])->pluck('name')->implode(', '),
+            'involvedCompanies' => isset($game['involved_companies']) ? collect($game['involved_companies'])->pluck('company')->pluck('name')->implode(', ') : 'Unknown Companies',
+            'platforms' => collect($game['platforms'])->pluck('abbreviation')->implode(', '),
+            'memberRating' => isset($game['rating']) ? round($game['rating']) . '%' : '0%',
+            'criticRating' => isset($game['aggregated_rating']) ? round($game['aggregated_rating']) . '%' : '0%',
+            'trailer' => isset($game['videos']) ? 'https://youtube.com/watch/' . $game['videos'][0]['video_id'] : '',
+            'screenshots' => isset($game['screenshots']) ? collect($game['screenshots'])->map(function ($screenshot) {
+                return [
+                    'big' => Str::replaceFirst('thumb', 'screenshot_big', $screenshot['url']),
+                    'huge' => Str::replaceFirst('thumb', 'screenshot_huge', $screenshot['url'])
+                ];
+            })->take(9) : null,
+            'similar_games' => collect($game['similar_games'])->map(function ($similarGame) {
+                return collect($similarGame)->merge([
+                    'coverImageUrl' => isset($similarGame['cover']) ? Str::replaceFirst('thumb', 'cover_big', $similarGame['cover']['url']) : '',
+                    'rating' => isset($similarGame['rating']) ? round($similarGame['rating']) . '%' : null,
+                    'platforms' => isset($similarGame['platforms']) ? collect($similarGame['platforms'])->pluck('abbreviation')->implode(', ') : 'Unknown Platform'
+                ]);
+            })->take(6),
+            'social' => [
+                'website' => collect($game['websites'])->first(),
+                'facebook' => collect($game['websites'])->filter(function ($website) {
+                    return Str::contains($website['url'], 'facebook');
+                })->first(),
+                'twitter' => collect($game['websites'])->filter(function ($website) {
+                    return Str::contains($website['url'], 'twitter');
+                })->first(),
+                'instagram' => collect($game['websites'])->filter(function ($website) {
+                    return Str::contains($website['url'], 'instagram');
+                })->first(),
+            ]
         ]);
     }
 
