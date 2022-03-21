@@ -22,7 +22,7 @@ class PopularGames extends Component
                 'Authorization' => 'Bearer ' . cache('token')
             ])
                 ->withBody("
-                fields name, cover.url, first_release_date, platforms.abbreviation, rating;
+                fields name, cover.url, first_release_date, platforms.abbreviation, rating, slug;
             where rating > 75
             & platforms = (6,48,49,167,169,130)
             & first_release_date > {$before};
