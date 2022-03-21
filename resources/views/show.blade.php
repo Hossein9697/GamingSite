@@ -114,31 +114,8 @@
             <h2 class="text-blue-500 uppercase tracking-wide font-semibold mt-12 lg:mt-0">Similar Games</h2>
             <div
                 class="popular-games text-sm grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-12">
-                @foreach($game['similar_games'] as $similarGame)
-                    <div class="game mt-8 ">
-                        <div class="relative inline-block">
-                            <a href="{{ route('games.show', $similarGame['slug']) }}">
-                                <img src="{{ $similarGame['coverImageUrl'] }}"
-                                     alt="game cover"
-                                     class="hover:opacity-75 transition ease-in-out duration-150">
-                            </a>
-                            @if($similarGame['rating'])
-                                <div class="absolute bottom-0 right-0 w-16 h-16 bg-gray-800 rounded-full"
-                                     style="right: -20px; bottom: -20px">
-                                    <div class="font-semibold text-xs flex justify-center items-center h-full">
-                                        {{ $similarGame['rating'] }}
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                        <a href="{{ route('games.show', $similarGame['slug']) }}"
-                           class="block text-base font-semibold leading-tight hover:text-gray-400 mt-8">
-                            {{ $similarGame['name'] }}
-                        </a>
-                        <div class="text-gray-400 mt-1">
-                            {{ $similarGame['platforms'] }}
-                        </div>
-                    </div>
+                @foreach($game['similar_games'] as $game)
+                    <x-game-card :game="$game"/>
                 @endforeach
             </div>
         </div>
