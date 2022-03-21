@@ -15,7 +15,7 @@ class RecentlyReviewed extends Component
     {
         $before = Carbon::now()->subMonth(6)->timestamp;
 
-        $this->recentlyReviewed = Cache::remember('recently-reviewed', 3600, function () use ($before) {
+        $this->recentlyReviewed = Cache::remember('recently-reviewed', 60, function () use ($before) {
             return Http::withHeaders([
                 'Client-ID' => config('services.igdb.client_id'),
                 'Authorization' => 'Bearer ' . \cache('token')

@@ -15,7 +15,7 @@ class MostAnticipated extends Component
     {
         $before = Carbon::now()->subMonth(6)->timestamp;
 
-        $this->mostAnticipated = Cache::remember('most-anticipated', 3600, function () use ($before) {
+        $this->mostAnticipated = Cache::remember('most-anticipated', 60, function () use ($before) {
             return Http::withHeaders([
                 'Client-ID' => config('services.igdb.client_id'),
                 'Authorization' => 'Bearer ' . \cache('token')

@@ -9,7 +9,7 @@ class GamesController extends Controller
 {
     public function index()
     {
-        Cache::remember('token', 1, function () {
+        Cache::remember('token', 5000000, function () {
             $response = Http::post('https://id.twitch.tv/oauth2/token', [
                 'client_id' => config('services.igdb.client_id'),
                 'client_secret' => config('services.igdb.client_secret'),

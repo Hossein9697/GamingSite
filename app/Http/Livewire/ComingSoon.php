@@ -16,7 +16,7 @@ class ComingSoon extends Component
         $current = Carbon::now()->timestamp;
         $after = Carbon::now()->addDay(10)->timestamp;
 
-        $this->comingSoon = Cache::remember('coming-soon', 3600, function () use ($after, $current) {
+        $this->comingSoon = Cache::remember('coming-soon', 60, function () use ($after, $current) {
             return Http::withHeaders([
                 'Client-ID' => config('services.igdb.client_id'),
                 'Authorization' => 'Bearer ' . \cache('token')

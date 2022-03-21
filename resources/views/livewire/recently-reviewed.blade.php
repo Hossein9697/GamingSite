@@ -30,10 +30,29 @@
             </div>
         </div>
     @empty
-        <button type="button" class="bg-indigo-500" disabled>
-            <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-            </svg>
-            Loading...
-        </button>
+        @foreach(range(1,3) as $game)
+            <div class="bg-gray-800 rounded-lg shadow-md flex px-6 py-6">
+                <div class="relative flex-none">
+                    <div class="bg-gray-700 w-32 lg:w-48 h-40 lg:h-56"></div>
+                </div>
+                <div class="ml-6 lg:ml-12">
+                    <div
+                        class="inline-block text-lg font-semibold leading-tight text-transparent bg-gray-700 rounded mt-4">
+                        Game Name
+                    </div>
+                    <div class="mt-8 space-y-4 hidden lg:block">
+                <span class="text-transparent bg-gray-700 rounded inline-block">
+                    Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem
+                </span>
+                        <span class="text-transparent bg-gray-700 rounded inline-block">
+                    Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem
+                </span>
+                        <span class="text-transparent bg-gray-700 rounded inline-block">
+                    Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem
+                </span>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     @endforelse
 </div>

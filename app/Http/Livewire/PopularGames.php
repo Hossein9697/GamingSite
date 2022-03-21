@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
+use function cache;
 
 class PopularGames extends Component
 {
@@ -15,10 +16,10 @@ class PopularGames extends Component
     {
         $before = Carbon::now()->subMonth(6)->timestamp;
 
-        $this->popularGames = Cache::remember('popular-games', 3600, function () use ($before) {
+        $this->popularGames = Cache::remember('popular-games', 60, function () use ($before) {
             return Http::withHeaders([
                 'Client-ID' => config('services.igdb.client_id'),
-                'Authorization' => 'Bearer ' . \cache('token')
+                'Authorization' => 'Bearer ' . cache('token')
             ])
                 ->withBody("
                 fields name, cover.url, first_release_date, platforms.abbreviation, rating;
