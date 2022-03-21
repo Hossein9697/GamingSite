@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Video Games</title>
     <link href="/css/app.css" rel="stylesheet">
+    @livewireStyles
 </head>
 <body class="bg-gray-900 text-white">
 <header class="border-b border-gray-800">
@@ -45,5 +46,6 @@
             Heyatzadeh</a>
     </div>
 </footer>
+@livewireScripts
 </body>
 </html>
