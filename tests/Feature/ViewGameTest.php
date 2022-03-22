@@ -26,8 +26,8 @@ class ViewGameTest extends TestCase
         $response->assertSee('PC');
         $response->assertSee('Rogue Warrior');
         $response->assertSee('fake Summary');
-        $response->assertSee('88%');
-        $response->assertSee('85%');
+        $response->assertSee('88');
+        $response->assertSee('85');
         $response->assertsee('images.igdb.com/igdb/image/upload/t_cover_big/co2dto.jpg');
         $response->assertSee('images.igdb.com/igdb/image/upload/t_screenshot_big/tlwczv6q5r6o4uuryxgt.jpg');
         $response->assertSee('images.igdb.com/igdb/image/upload/t_screenshot_huge/tlwczv6q5r6o4uuryxgt.jpg');
