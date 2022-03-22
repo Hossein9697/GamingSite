@@ -21,14 +21,7 @@
             </ul>
         </div>
         <div class="flex items-center mt-6 lg:mt-0">
-            <div class="relative">
-                <input type="text"
-                       class="bg-gray-800 text-sm rounded-full px-3 py-1 w-64 focus:outline-none focus:shadow-outline pl-8"
-                       placeholder="Search...">
-                <div class="absolute top-0 flex items-center h-full ml-2">
-                    <img src="/img/icons8-search.svg" class="fill-current text-gray-400 w-4">
-                </div>
-            </div>
+            <livewire:search-drop-down/>
             <div class="ml-6">
                 <a href="#">
                     <img src="/img/icons8-gamer-64.png" alt="avatar" class="rounded-full w-8">
