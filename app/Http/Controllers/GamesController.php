@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class GamesController extends Controller
 {
-    public function index()
+    public function __construct()
     {
         Cache::remember('token', 5000000, function () {
             $response = Http::post('https://id.twitch.tv/oauth2/token', [
@@ -18,7 +18,10 @@ class GamesController extends Controller
             ])->json();
             return $response['access_token'];
         });
+    }
 
+    public function index()
+    {
         return view('index');
     }
 

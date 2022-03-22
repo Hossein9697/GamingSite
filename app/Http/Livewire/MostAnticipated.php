@@ -14,19 +14,17 @@ class MostAnticipated extends Component
 
     public function loadMostAnticipatedGames()
     {
-        $before = Carbon::now()->subMonth(6)->timestamp;
+        $before = Carbon::now()->subMonth(1)->timestamp;
 
         $unformattedGames = Cache::remember('most-anticipated', 60, function () use ($before) {
             return Http::withHeaders([
                 'Client-ID' => config('services.igdb.client_id'),
                 'Authorization' => 'Bearer ' . \cache('token')
             ])->withBody("
-            fields name, cover.url, first_release_date, platforms.abbreviation, rating, rating_count, summary, slug;
-            where rating > 90
-            & platforms = (6,48,49,167,169,130)
-            & first_release_date > {$before}
-            & rating_count > 5;
-            sort rating_count desc;
+            fields name, slug, cover.url, first_release_date;
+            where first_release_date > {$before}
+            & aggregated_rating_count > 1;
+            sort first_release_date desc;
             limit 4;
             ", 'text/plain')
                 ->post('https://api.igdb.com/v4/games')
@@ -41,7 +39,8 @@ class MostAnticipated extends Component
         return collect($games)->map(function ($game) {
             return collect($game)->merge([
                 'coverImageUrl' => Str::replaceFirst('thumb', 'cover_big', $game['cover']['url']),
-                'releaseDate' => Carbon::parse($game['first_release_date'])->format('M d, Y')
+                'releaseDate' => Carbon::parse($game['first_release_date'])->format('M d, Y'),
+                'name' => Str::substr($game['name'], 0, 40)
             ]);
         });
     }

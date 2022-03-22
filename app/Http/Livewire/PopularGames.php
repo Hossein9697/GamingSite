@@ -22,12 +22,12 @@ class PopularGames extends Component
                 'Client-ID' => config('services.igdb.client_id'),
                 'Authorization' => 'Bearer ' . cache('token')
             ])->withBody("
-            fields name, cover.url, first_release_date, platforms.abbreviation, rating, slug;
+            fields name, slug, cover.url, platforms.abbreviation, rating;
             where
-            rating > 75
-            & platforms = (6,48,49,167,169,130)
+            platforms = (6,48,49,167,169,130)
+            & total_rating_count > 1
             & first_release_date > {$before};
-            sort rating desc;
+            sort total_rating_count desc;
             limit 12;
             "
                 , 'text/plain')

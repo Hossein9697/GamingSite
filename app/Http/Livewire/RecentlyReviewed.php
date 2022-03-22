@@ -14,19 +14,18 @@ class RecentlyReviewed extends Component
 
     public function loadRecentlyReviewedGames()
     {
-        $before = Carbon::now()->subMonth(6)->timestamp;
+        $before = Carbon::now()->subMonth(1)->timestamp;
 
         $unformattedGames = Cache::remember('recently-reviewed', 60, function () use ($before) {
             return Http::withHeaders([
                 'Client-ID' => config('services.igdb.client_id'),
                 'Authorization' => 'Bearer ' . \cache('token')
             ])->withBody("
-            fields name, cover.url, first_release_date, platforms.abbreviation, rating, rating_count, summary, slug;
-            where rating > 75
+            fields name, cover.url, platforms.abbreviation, rating, summary, slug;
+            where total_rating_count > 1
             & platforms = (6,48,49,167,169,130)
-            & first_release_date > {$before}
-            & rating_count > 5;
-            sort rating_count desc;
+            & first_release_date > {$before};
+            sort total_rating_count desc;
             limit 3;
             ", 'text/plain')
                 ->post('https://api.igdb.com/v4/games')

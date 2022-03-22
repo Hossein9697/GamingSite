@@ -15,25 +15,22 @@ class ComingSoon extends Component
     public function loadComingSoonGames()
     {
         $current = Carbon::now()->timestamp;
-        $after = Carbon::now()->addDay(10)->timestamp;
 
-        $unformattedGames = Cache::remember('coming-soon', 60, function () use ($after, $current) {
+        $unformattedGames = Cache::remember('coming-soon', 60, function () use ($current) {
             return Http::withHeaders([
                 'Client-ID' => config('services.igdb.client_id'),
                 'Authorization' => 'Bearer ' . \cache('token')
             ])->withBody("
-            fields name, cover.url, first_release_date, platforms.abbreviation, rating, rating_count, summary, slug;
+            fields name, slug, cover.url, first_release_date;
             where
-            platforms = (6,48,49,167,169,130)
-            & first_release_date > {$current}
-            & first_release_date < {$after};
+            first_release_date > {$current};
             sort first_release_date asc;
             limit 4;
             ", 'text/plain')
                 ->post('https://api.igdb.com/v4/games')
                 ->json();
         });
-
+//        dd($unformattedGames);
         $this->comingSoon = $this->formatForView($unformattedGames);
     }
 
@@ -43,7 +40,7 @@ class ComingSoon extends Component
             return collect($game)->merge([
                 'coverImageUrl' => Str::replaceFirst('thumb', 'cover_big', $game['cover']['url']),
                 'releaseDate' => Carbon::parse($game['first_release_date'])->format('M d, Y'),
-                'name' => Str::substr($game['name'], '0', '35')
+                'name' => Str::substr($game['name'], '0', '40')
             ]);
         });
     }
