@@ -24,7 +24,7 @@
                     <li class="border-b border-gray-700">
                         <a href="{{ route('games.show', $game['slug']) }}"
                            class="block hover:bg-gray-700 px-3 py-3 flex items-center transition ease-in-out duration-150">
-                            <img src="{{ Str::replaceFirst('thumb', 'cover_small', $game['cover']['url']) }}"
+                            <img src="{{ $game['coverImageUrl'] }}"
                                  alt="cover"
                                  class="w-10">
                             <span class="ml-4">{{ $game['name'] }}</span>
