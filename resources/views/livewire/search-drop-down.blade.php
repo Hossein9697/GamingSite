@@ -1,9 +1,21 @@
-<div class="relative">
+<div class="relative" x-data="{ isVisible: true }" @click.away="isVisible=false">
     <input
         wire:model.debounce.300ms="search"
         type="text"
         class="bg-gray-800 text-sm rounded-full px-3 py-1 w-64 focus:outline-none focus:shadow-outline pl-8"
-        placeholder="Search...">
+        placeholder="Search (Press '/' to focus)"
+        x-ref="search"
+        @focus="isVisible=true"
+        @keydown.escape.window="isVisible=false"
+        @keydown="isVisible=true"
+        @keydown.shift.tab="isVisible=false"
+        @keydown.window="
+            if(event.keyCode === 191){
+                event.preventDefault();
+                $refs.search.focus();
+            }
+        "
+    >
     <div class="absolute top-0 flex items-center h-full ml-2">
         <img src="/img/icons8-search.svg" class="fill-current text-gray-400 w-4">
     </div>
@@ -18,12 +30,20 @@
             fill="currentFill"/>
     </svg>
     @if(strlen($search) > 2)
-        <div class="absolute z-50 bg-gray-800 text-xs rounded w-64 mt-2">
+        <div class="absolute z-50 bg-gray-800 text-xs rounded w-64 mt-2"
+             x-show="isVisible"
+             x-transition.duration.500ms
+        >
             <ul>
                 @forelse($searchResults as $game)
                     <li class="border-b border-gray-700">
-                        <a href="{{ route('games.show', $game['slug']) }}"
-                           class="block hover:bg-gray-700 px-3 py-3 flex items-center transition ease-in-out duration-150">
+                        <a
+                            href="{{ route('games.show', $game['slug']) }}"
+                            class="block hover:bg-gray-700 px-3 py-3 flex items-center transition ease-in-out duration-150"
+                            @if($loop->last)
+                            @keydown.tab="isVisible=false"
+                            @endif
+                        >
                             <img src="{{ $game['coverImageUrl'] }}"
                                  alt="cover"
                                  class="w-10">
